@@ -1,2 +1,2 @@
 # yahn-c
-Yet Another Hacker News Clone, Hacker News PWA built with React and Typescript
+**Y**et **A**nother **H**acker **N**ews **C**lone - A Hacker News PWA built with React and Typescript
