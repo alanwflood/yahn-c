@@ -3,8 +3,6 @@ import webpack from "webpack";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 
 const config: webpack.ConfigurationFactory = (_env, argv) => {
-  const isProd = argv.mode === "production";
-
   return {
     entry: path.resolve(__dirname, "src/index.ts"),
     output: {
@@ -34,17 +32,16 @@ const config: webpack.ConfigurationFactory = (_env, argv) => {
     plugins: [
       new HTMLWebpackPlugin({
         template: path.join(__dirname, "src/index.html"),
+        env: argv.mode,
       }),
     ],
     resolve: {
       extensions: [".tsx", ".ts", ".js"],
     },
-    externals: isProd
-      ? {
-          react: "React",
-          "react-dom": "ReactDOM",
-        }
-      : {},
+    externals: {
+      react: "React",
+      "react-dom": "ReactDOM",
+    },
     devServer: {
       port: 7778,
       historyApiFallback: true,

@@ -1,10 +1,7 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Thing } from "./components/something";
+import React from "react";
+import ReactDOM from "react-dom";
+import { Router } from "./router";
 
-export function Application() {
-  ReactDOM.render(
-    <Thing />,
-    document.getElementById("app")
-  );
+export function Application(): void {
+  ReactDOM.render(<Router />, document.getElementById("app"));
 }
