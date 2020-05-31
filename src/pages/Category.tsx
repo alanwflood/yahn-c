@@ -1,50 +1,101 @@
-import React, { useEffect, useState, ReactElement, useContext } from "react";
+import React, { useEffect, useReducer, ReactElement, useContext } from "react";
 import { Category, ItemResponse } from "../api/HackerNewsApi";
 import { ApiContext } from "../context/ApiContext";
-import { Item } from "../components/Item";
 
-type CategoryPageProps = { category: Category };
-export function CategoryPage({ category }: CategoryPageProps): ReactElement {
-  const itemLimit = 25;
+import { LoadMoreMarker } from "../components/LoadMoreMarker";
+import { Loader } from "../components/Loader";
+import { Items } from "../components/Items";
+
+type InitialStateType = {
+  offset: number;
+  stories: ItemResponse[];
+  isLoading: boolean;
+  error: Error | null;
+};
+
+const initialState: InitialStateType = {
+  offset: 0,
+  stories: [],
+  isLoading: false,
+  error: null,
+};
+
+enum Actions {
+  incrementOffset,
+  fetchStoriesRequest,
+  fetchStoriesSuccess,
+  fetchStoriesFailure,
+}
+
+type ActionsType =
+  | { type: Actions.incrementOffset }
+  | { type: Actions.fetchStoriesRequest }
+  | {
+      type: Actions.fetchStoriesSuccess;
+      payload: ItemResponse[];
+    }
+  | {
+      type: Actions.fetchStoriesFailure;
+      payload: Error;
+    };
+
+function reducer(itemLimit: number) {
+  return function (state: InitialStateType, action: ActionsType): InitialStateType {
+    switch (action.type) {
+      case Actions.incrementOffset:
+        const additionalOffset = itemLimit - (state.stories.length % itemLimit);
+        const offset = additionalOffset + itemLimit + state.offset;
+        return { ...state, offset };
+      case Actions.fetchStoriesRequest:
+        return { ...state, isLoading: true };
+      case Actions.fetchStoriesSuccess:
+        return {
+          ...state,
+          stories: [...state.stories, ...action.payload],
+          isLoading: false,
+          error: null,
+        };
+      case Actions.fetchStoriesFailure:
+        return { ...state, error: action.payload, isLoading: false };
+    }
+  };
+}
+
+type CategoryPagePropsType = { category: Category };
+export function CategoryPage({ category }: CategoryPagePropsType): ReactElement {
   const api = useContext(ApiContext);
-  const [stories, setStories] = useState<ItemResponse[]>([]);
-  const [offset, setOffset] = useState<number>(0);
+  const [{ offset, stories, isLoading, error }, dispatch] = useReducer(reducer(api.itemLimit), initialState);
 
-  async function fetchStories(): Promise<ItemResponse[]> {
-    return api.fetchStories(category, offset, itemLimit);
-  }
-
-  function loadMore(): void {
-    setOffset((offset) => offset + itemLimit);
+  function fetchStories(): void {
+    dispatch({ type: Actions.fetchStoriesRequest });
+    api
+      .fetchStories(category, offset)
+      .then((newStories) =>
+        dispatch({
+          type: Actions.fetchStoriesSuccess,
+          payload: newStories,
+        }),
+      )
+      .catch((error) =>
+        dispatch({
+          type: Actions.fetchStoriesFailure,
+          payload: error,
+        }),
+      );
   }
 
   // Load More when offset changes
   useEffect(() => {
-    async function loadStories(): Promise<void> {
-      const fetchedStories = await fetchStories();
-      setStories((prevStories) => [...prevStories, ...fetchedStories]);
-    }
-    loadStories();
+    fetchStories();
   }, [offset]);
 
-  // Load initial stories when category changes
-  useEffect(() => {
-    setOffset(0);
-    async function loadStories(): Promise<void> {
-      const fetchedStories = await fetchStories();
-      setStories(fetchedStories);
-    }
-    loadStories();
-  }, [category]);
-
   return (
-    <main>
-      <ul>
-        {stories.map(({ title, id }) => (
-          <Item key={id} id={id} title={title} />
-        ))}
-      </ul>
-      <button onClick={loadMore}>Load More</button>
+    <main className="max-w-4xl mx-auto bg-white px-3">
+      <Items stories={stories} />
+      {error ? <div>An Error Occured</div> : ""}
+      <LoadMoreMarker onIntersect={() => dispatch({ type: Actions.incrementOffset })}>
+        {isLoading ? <Loader /> : ""}
+      </LoadMoreMarker>
     </main>
   );
 }

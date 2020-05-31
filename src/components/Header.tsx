@@ -7,7 +7,7 @@ type NavItemProps = {
 };
 function NavItem({ to, children }: NavItemProps): React.ReactElement {
   return (
-    <li>
+    <li className="mr-6">
       <Link to={to}>{children}</Link>
     </li>
   );
@@ -15,9 +15,9 @@ function NavItem({ to, children }: NavItemProps): React.ReactElement {
 
 export function Header(): React.ReactElement {
   return (
-    <header>
+    <header className="py-4 px-2 mb-3 bg-blue-300">
       <nav>
-        <ul>
+        <ul className="flex">
           <NavItem to="/">Top</NavItem>
           <NavItem to="/new">New</NavItem>
           <NavItem to="/best">Best</NavItem>

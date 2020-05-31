@@ -4,11 +4,13 @@ import HTMLWebpackPlugin from "html-webpack-plugin";
 
 const config: webpack.ConfigurationFactory = (_env, argv) => {
   return {
-    entry: path.resolve(__dirname, "src/index.ts"),
+    entry: {
+      main: path.resolve(__dirname, "src/index.ts"),
+    },
     output: {
       path: path.resolve(__dirname, "dist"),
       publicPath: "/",
-      filename: "[name].bundle.[chunkhash].js",
+      filename: "[name].bundle.[hash].js",
     },
     devtool: "source-map",
     module: {
@@ -43,6 +45,7 @@ const config: webpack.ConfigurationFactory = (_env, argv) => {
       "react-dom": "ReactDOM",
     },
     devServer: {
+      hot: true,
       port: 7778,
       historyApiFallback: true,
       contentBase: path.join(__dirname, "dist"),

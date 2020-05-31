@@ -33,7 +33,7 @@ export function Router(): ReactElement {
   return (
     <ApiContext.Provider value={new HackerNewsApi()}>
       <BrowserRouter>
-        <div>
+        <div className="min-h-screen bg-gray-400">
           <Header />
           <Switch>
             {categories.map(({ path, category }) => (
