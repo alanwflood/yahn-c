@@ -3,7 +3,7 @@ import "./Loader.css";
 
 export function Loader(): React.ReactElement {
   return (
-    <div className="lds-ring">
+    <div className="mx-auto lds-ring">
       <div></div>
       <div></div>
       <div></div>

@@ -2,7 +2,6 @@ import React, { useEffect, useReducer, ReactElement, useContext } from "react";
 import { Category, ItemResponse } from "../api/HackerNewsApi";
 import { ApiContext } from "../context/ApiContext";
 
-import { LoadMoreMarker } from "../components/LoadMoreMarker";
 import { Loader } from "../components/Loader";
 import { Items } from "../components/Items";
 
@@ -90,12 +89,14 @@ export function CategoryPage({ category }: CategoryPagePropsType): ReactElement 
   }, [offset]);
 
   return (
-    <main className="max-w-4xl mx-auto bg-white px-3">
-      <Items stories={stories} />
+    <div className="bg-white">
+      <Items
+        stories={stories}
+        loadMoreOffset={15}
+        loadMoreCallback={() => dispatch({ type: Actions.incrementOffset })}
+      />
       {error ? <div>An Error Occured</div> : ""}
-      <LoadMoreMarker onIntersect={() => dispatch({ type: Actions.incrementOffset })}>
-        {isLoading ? <Loader /> : ""}
-      </LoadMoreMarker>
-    </main>
+      {isLoading ? <Loader /> : ""}
+    </div>
   );
 }

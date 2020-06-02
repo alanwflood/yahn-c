@@ -35,19 +35,22 @@ export function Router(): ReactElement {
       <BrowserRouter>
         <div className="min-h-screen bg-gray-400">
           <Header />
-          <Switch>
-            {categories.map(({ path, category }) => (
-              <Route exact key={path} path={path}>
-                <CategoryPage category={category} />
+
+          <main className="max-w-4xl mx-auto px-3">
+            <Switch>
+              {categories.map(({ path, category }) => (
+                <Route exact key={path} path={path}>
+                  <CategoryPage category={category} />
+                </Route>
+              ))}
+              <Route path={Routes.Post(":postId")}>
+                <PostPage />
               </Route>
-            ))}
-            <Route path={Routes.Post(":postId")}>
-              <PostPage />
-            </Route>
-            <Route>
-              <h1>Route not found!</h1>
-            </Route>
-          </Switch>
+              <Route>
+                <h1>Route not found!</h1>
+              </Route>
+            </Switch>
+          </main>
         </div>
       </BrowserRouter>
     </ApiContext.Provider>

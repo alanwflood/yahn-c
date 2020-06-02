@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 type NavItemProps = {
   to: string;
@@ -8,14 +8,16 @@ type NavItemProps = {
 function NavItem({ to, children }: NavItemProps): React.ReactElement {
   return (
     <li className="mr-6">
-      <Link to={to}>{children}</Link>
+      <NavLink activeClassName="underline" className="hover:underline" exact to={to}>
+        {children}
+      </NavLink>
     </li>
   );
 }
 
 export function Header(): React.ReactElement {
   return (
-    <header className="py-4 px-2 mb-3 bg-blue-300">
+    <header className="py-4 px-2 bg-blue-300 shadow-md">
       <nav>
         <ul className="flex">
           <NavItem to="/">Top</NavItem>
