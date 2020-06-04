@@ -17,7 +17,7 @@ function NavItem({ to, children }: NavItemProps): React.ReactElement {
 
 export function Header(): React.ReactElement {
   return (
-    <header className="py-4 px-2 bg-blue-300 shadow-md">
+    <header className="py-4 px-2 bg-primary shadow-md">
       <nav>
         <ul className="flex">
           <NavItem to="/">Top</NavItem>

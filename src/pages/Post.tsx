@@ -58,17 +58,9 @@ export function PostPage(): ReactElement | null {
     <div>
       <article className="mb-12 mt-4 bg-white shadow-lg px-3 pb-8 pt-3">
         <PostTitle url={post.url} title={post.title} />
-        <ItemDetails id={post.id} score={post.score} by={post.by} time={post.time} />
+        <ItemDetails id={post.id} score={post.score} by={post.by} time={post.time} hideComments />
         {post.text ? <div className="mt-2" dangerouslySetInnerHTML={{ __html: htmlify(post.text) }} /> : null}
       </article>
-      <ul className="bg-white shadow-lg px-3">
-        {kids.map((c) => (
-          <li key={c.id}>
-            {c.text ? <div dangerouslySetInnerHTML={{ __html: c.text }} /> : null}
-            <strong>{c.by}</strong>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

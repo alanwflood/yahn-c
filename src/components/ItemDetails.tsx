@@ -10,7 +10,16 @@ function DateSincePosted({ unixTimestamp }: { unixTimestamp?: number }): ReactEl
   const time = fromUnixTime(unixTimestamp);
   return <time dateTime={formatISO(time)}>{formatDistanceToNow(time)} ago</time>;
 }
-export function ItemDetails({ score, by, id, time, descendants }: ItemResponse): ReactElement {
+
+type ItemDetailsPropType = ItemResponse & { hideComments?: boolean };
+export function ItemDetails({
+  score,
+  by,
+  id,
+  time,
+  descendants = 0,
+  hideComments = false,
+}: ItemDetailsPropType): ReactElement {
   return (
     <div>
       {score} Points
@@ -20,13 +29,15 @@ export function ItemDetails({ score, by, id, time, descendants }: ItemResponse):
         {by}
       </Link>{" "}
       <DateSincePosted unixTimestamp={time} />
-      <span className="mx-2">|</span>
-      {descendants ? (
-        <Link className="underline" to={Routes.Post(id)}>
-          {descendants} comments
-        </Link>
-      ) : (
+      {hideComments ? (
         ""
+      ) : (
+        <>
+          <span className="mx-2">|</span>
+          <Link className="underline" to={Routes.Post(id)}>
+            {descendants} comments
+          </Link>
+        </>
       )}
     </div>
   );
